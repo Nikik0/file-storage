@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FileRepository: ReactiveMongoRepository<FileEntity, Long> {
+interface FileRepository: ReactiveMongoRepository<FileEntity, String> {
 }

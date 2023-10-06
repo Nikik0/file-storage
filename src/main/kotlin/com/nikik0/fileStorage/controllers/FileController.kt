@@ -8,6 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Flux
+import reactor.kotlin.core.publisher.toFlux
 
 @RestController
 @RequestMapping("/api/v1/storage")
@@ -36,7 +37,7 @@ class FileController (
     }
 
     @GetMapping("/get/{id}")
-    suspend fun get(@PathVariable id: Long) =
+    suspend fun get(@PathVariable id: String) =
         fileRepository.findById(id).flux()
 
     @GetMapping("/test")
@@ -48,6 +49,7 @@ class FileController (
             )
         )).flux()
 
+    @GetMapping("/all")
     suspend fun getAll() =
         fileRepository.findAll()
 }
