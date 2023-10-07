@@ -8,6 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux
 
 @RestController
@@ -25,20 +26,19 @@ class FileController (
 //        fileRepository.save(fileEntity).flux()
 
     @PostMapping("/save", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    suspend fun createFile(@RequestParam("file") file: MultipartFile): Flux<FileEntity> {
-        println(ObjectId())
+    suspend fun createFile(@RequestParam("file") file: MultipartFile): Mono<FileEntity> {
         return fileRepository.save(FileEntity(
             ObjectId().toHexString(),
             Binary(
                 BsonBinarySubType.BINARY,
                 file.bytes
             )
-        )).flux()
+        ))
     }
 
     @GetMapping("/get/{id}")
     suspend fun get(@PathVariable id: String) =
-        fileRepository.findById(id).flux()
+        fileRepository.findById(id)
 
     @GetMapping("/test")
     suspend fun test() =
@@ -47,7 +47,7 @@ class FileController (
                 BsonBinarySubType.BINARY,
                 "smin".toByteArray()
             )
-        )).flux()
+        ))
 
     @GetMapping("/all")
     suspend fun getAll() =
