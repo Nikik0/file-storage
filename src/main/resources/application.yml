@@ -2,7 +2,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27100/file_db
+      uri: mongodb://localhost:27101/file_db
       username: user
       password: 123
   servlet:
