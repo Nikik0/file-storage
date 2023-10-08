@@ -1,6 +1,7 @@
 package com.nikik0.fileStorage.controllers
 import com.nikik0.fileStorage.entities.FileEntity
 import com.nikik0.fileStorage.repositories.FileRepository
+import com.nikik0.fileStorage.services.FileService
 import org.bson.BsonBinarySubType
 import org.bson.types.Binary
 import org.bson.types.ObjectId
@@ -14,7 +15,7 @@ import reactor.kotlin.core.publisher.toFlux
 @RestController
 @RequestMapping("/api/v1/storage")
 class FileController (
-    private val fileRepository: FileRepository
+    private val fileService: FileService
         ){
 
 //    @PostMapping(value = ["/save"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
@@ -26,30 +27,23 @@ class FileController (
 //        fileRepository.save(fileEntity).flux()
 
     @PostMapping("/save", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    suspend fun createFile(@RequestParam("file") file: MultipartFile): Mono<FileEntity> {
-        return fileRepository.save(FileEntity(
-            ObjectId().toHexString(),
-            Binary(
-                BsonBinarySubType.BINARY,
-                file.bytes
-            )
-        ))
-    }
+    suspend fun createFile(@RequestParam("file") file: MultipartFile, @RequestHeader("Authorization") auth: String) =
+        fileService.createFile(file, auth)
 
     @GetMapping("/get/{id}")
-    suspend fun get(@PathVariable id: String) =
-        fileRepository.findById(id)
+    suspend fun get(@PathVariable id: String, @RequestHeader("Authorization") auth: String) =
+        fileService.getSingle(id, auth)
 
-    @GetMapping("/test")
-    suspend fun test() =
-        fileRepository.save(FileEntity(
-            ObjectId("10".toByteArray()).toHexString(), Binary(
-                BsonBinarySubType.BINARY,
-                "smin".toByteArray()
-            )
-        ))
+//    @GetMapping("/test")
+//    suspend fun test() =
+//        fileRepository.save(FileEntity(
+//            ObjectId("10".toByteArray()).toHexString(), Binary(
+//                BsonBinarySubType.BINARY,
+//                "smin".toByteArray()
+//            )
+//        ))
 
     @GetMapping("/all")
-    suspend fun getAll() =
-        fileRepository.findAll()
+    suspend fun getAll(@RequestHeader("Authorization") auth: String) =
+        fileService.getAll(auth)
 }
