@@ -44,9 +44,9 @@ class FileService(
         else Mono.error(RuntimeException())
 
     suspend fun getSingle(id: String, auth: String) =
-        if (callToCheckCred(auth, listOf("professor", "mentor", "admin")))
+        //if (callToCheckCred(auth, listOf("professor", "mentor", "admin")))
             fileRepository.findById(id)
-        else Mono.error(RuntimeException())
+        //else Mono.error(RuntimeException())
 
     suspend fun getAll(auth: String) =
         fileRepository.findAll()
